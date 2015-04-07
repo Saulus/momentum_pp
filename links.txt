@@ -1,0 +1,39 @@
+http://ichart.finance.yahoo.com/table.csv?s=%5EMDAXI&a=11&b=30&c=2013&d=02&e=4&f=2014&g=d&ignore=.csv
+http://ichart.finance.yahoo.com/table.csv?s=%5EMDAXI&a=11&b=30&c=1987&d=2&e=4&f=2014&g=d&ignore=.csv
+http://ichart.finance.yahoo.com/table.csv?s=WCMK.DE&g=d&ignore=.csv
+
+http://www.jarloo.com/yahoo_finance/
+
+http://www.jarloo.com/get-yahoo-finance-api-data-via-yql/
+
+EGDAXI
+
+Alternativ: HDAX (alle DAX, TecDax, Mdax)
+GDAXHI
+http://ichart.finance.yahoo.com/table.csv?s=%5EGDAXHI&a=11&b=31&c=1987&d=2&e=4&f=2014&g=d&ignore=.csv
+
+
+
+
+
+Zusammensetzung MDAX
+http://www.dax-indices.com/DE/MediaLibrary/Document/Historical_Index_Compositions.pdf
+-> manuell aus:
+http://www.dax-indices.com/MediaLibrary/Document/WeightingFiles/MDAX_ICR.20091210.xls
+http://www.dax-indices.com/MediaLibrary/Document/WeightingFiles/MDAX_ICR.20100222.xls
+
+
+AIR.DE
+http://ichart.finance.yahoo.com/table.csv?s=AIR.DE&d=2&e=4&f=2014&g=d&a=11&b=28&c=2007&ignore=.csv
+
+
+
+Die gelieferten Kursdaten sind in einer besonderen Art Split- und Dividenden-bereinigt. Neben den Spalten Date, Open, High, Low, Close und Volume wird die Spalte Adjusted Close mitgeliefert. Hierin versteckt sich der nach Split- und Dividenden bereinigte Schlusskurs des jeweiligen Wertpapiers vom jeweiligen Tag, Monat etc. Möchte man mit den Daten eine komplett bereinigte Kurshistorie erzeugen, müssen alle Spalten vorher über die Werte der Spalte Adjusted Close neu berechnet werden. Eigentlich eine sehr praktische Art, die Split- und Dividendeninformationen unterzubringen. Somit muss man diese nicht separat laden und daraufhin die Kursreihen anpassen. Die Ermittlung der angepassten Kurswerte je Zeile erfolgt ganz einfach über folgende Formel: 
+
+ nOpen_Adj = nOpen * nAdjusted_Close / nClose 
+
+ Der Wert nOpen_Adj ergibt den bereinigten Eröffnungskurs, nOpen und nClose sind die vorhandenen unbereinigten Eröffnungs- bzw. Schlusskurse und nAdjusted_Close der vorhandene bereinigte Schlusskurs. Für den jeweiligen Höchstkurs würde die Formel wie folgt lauten: 
+
+ nHigh_Adj = nHigh * nAdjusted_Close / nClose 
+
+ Low und Close ergeben sich schließlich nach dem selben Muster. 
