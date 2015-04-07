@@ -8,7 +8,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 
 public class Dax {
-	private HashMap<String,Aktie> aktien = new HashMap <String,Aktie>();
+	private HashMap<String,Share> aktien = new HashMap <String,Share>();
 
 	/*
 	 * Dax Format file: inkl. colnames = aktie_wkn	aktie	startdate	enddate
@@ -24,13 +24,13 @@ public class Dax {
 		String[] nextline;
 		Date startdate;
 		Date enddate;
-		Aktie newAktie;
+		Share newAktie;
 		while ((nextline = reader.readNext()) != null) {
 			if (!nextline[0].isEmpty()) {
 				try { startdate= Consts.dateFormatDE.parse(nextline[2]); } catch (ParseException e) { startdate=Consts.aStartdate; }
 				try { enddate= Consts.dateFormatDE.parse(nextline[3]); } catch (ParseException e) { enddate=Consts.anEnddate; }
 				String wkn = nextline[0].replaceAll("\\s","");
-				newAktie = new Aktie(wkn,nextline[1],startdate,enddate);
+				newAktie = new Share(wkn,nextline[1],startdate,enddate);
 				aktien.put(wkn,newAktie);
 			}
 		}
