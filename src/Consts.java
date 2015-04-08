@@ -1,19 +1,22 @@
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 public final class Consts {
 
-	public static final SimpleDateFormat dateFormatDE1 = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-	public static final SimpleDateFormat dateFormatDE2 = new SimpleDateFormat("yyyyMMdd", Locale.GERMAN);
-	public static final SimpleDateFormat dateFormatYahoo = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-	public static final Date anEnddate = new Date(4133894400000L); //="31.12.2100";
-	public static final Date aStartdate = new Date(946684800000L); //="01.01.2000";
+	public static final DateTimeFormatter dateFormatDE = DateTimeFormat.forPattern("dd.MM.YYYY");
+	public static final DateTimeFormatter dateFormatYearfirst = DateTimeFormat.forPattern("YYYYMMdd");
+	public static final DateTimeFormatter dateFormatYahoo = DateTimeFormat.forPattern("YYYY-MM-dd");
+	public static final LocalDate anEnddate = new LocalDate(2100,12,31); //="31.12.2100";
+	public static final LocalDate aStartdate = new LocalDate(2000,1,1); //="01.01.2000";
 	
-	public static final String priceurl = "http://ichart.finance.yahoo.com/table.csv?g=d&ignore=.csv&s=";
-	public static final String wknsuffix = ".DE";
+	public static final String priceurl = "http://ichart.finance.yahoo.com/table.csv?g=d&ignore=.csv&s=%SHARE%.DE";
+	public static final String priceurlreplacer = "%SHARE%";
+	
+	public static final String indexurl = "http://www.dax-indices.com/MediaLibrary/Document/WeightingFiles/%INDEX%_ICR.%DATE%.xls";
+	public static final String indexurlreplacer = "%INDEX%";
+	public static final String indexurlreplacerdate = "%DATE%";
 
 	
  	private Consts(){

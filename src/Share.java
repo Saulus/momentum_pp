@@ -1,14 +1,11 @@
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
+
+import org.joda.time.LocalDate;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -47,7 +44,7 @@ class Price {
 public class Share {
 	private String wkn;
 	private String name;
-	private HashMap<Date,Price> prices = new HashMap <Date,Price>();
+	private HashMap<LocalDate,Price> prices = new HashMap <LocalDate,Price>();
 	
 
 	public Share(String wkn, String name) {
@@ -64,20 +61,20 @@ public class Share {
 		return name;
 	}
 	
-	private Date getMaxDate (Set<Date> dates) {
-		Date maxdate = new Date(0);
-		for (Date d : dates) {
-			if (d.compareTo(maxdate) > 0) maxdate = d;
+	private LocalDate maxDateOf(Set<LocalDate> dates) {
+		LocalDate maxdate = Consts.aStartdate;
+		for (LocalDate d : dates) {
+			if (d.isAfter(maxdate)) maxdate = d;
 		}
 		return maxdate;
 	}
 	
-	public void getLatestKurse () {
-		String qurl = Consts.priceurl + this.wkn + Consts.wknsuffix;;
+	//Cave: Alternative WKN (with/without numbers?)
+	public void getPricesHistoric () {
+		String qurl = Consts.priceurl.replace(Consts.priceurlreplacer, this.wkn);;
 		if (prices.size() != 0) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(getMaxDate(prices.keySet()));
-			qurl = qurl + "&a=" + cal.get(Calendar.DATE) + "&b=" + cal.get(Calendar.MONTH) + "&c=" + cal.get(Calendar.YEAR); 
+			LocalDate maxdate = maxDateOf(prices.keySet());
+			qurl = qurl + "&a=" + maxdate.getDayOfMonth() + "&b=" + maxdate.getMonthOfYear() + "&c=" + maxdate.getYear(); 
 		};
 		
 		//REST API URL
@@ -90,21 +87,19 @@ public class Share {
 				CSVReader reader = new CSVReader(new InputStreamReader(conn.getInputStream()), ',');
 
 				String[] nextline = reader.readNext(); //header
-				Date day;
+				LocalDate day;
 				Price newPrice;
 				while ((nextline = reader.readNext()) != null) {
 					if (!nextline[0].isEmpty()) {
-						try {
-							day= Consts.dateFormatYahoo.parse(nextline[0]);
-							double open = Double.parseDouble(nextline[1]);
-							double high = Double.parseDouble(nextline[2]);
-							double low = Double.parseDouble(nextline[3]);
-							double close = Double.parseDouble(nextline[4]);
-							double volume = Double.parseDouble(nextline[5]);
-							double close_adj = Double.parseDouble(nextline[6]);
-							newPrice = new Price(open,high,low,close,volume,close_adj);
-							prices.put(day, newPrice);
-						} catch (ParseException e) { }
+						day= LocalDate.parse(nextline[0], Consts.dateFormatYahoo);
+						double open = Double.parseDouble(nextline[1]);
+						double high = Double.parseDouble(nextline[2]);
+						double low = Double.parseDouble(nextline[3]);
+						double close = Double.parseDouble(nextline[4]);
+						double volume = Double.parseDouble(nextline[5]);
+						double close_adj = Double.parseDouble(nextline[6]);
+						newPrice = new Price(open,high,low,close,volume,close_adj);
+						prices.put(day, newPrice);
 					}
 				}
 				reader.close();
@@ -112,6 +107,13 @@ public class Share {
 		} catch (NumberFormatException | IOException e) {}
 	}
 	
-	
+	public void getPricesIntraday () {
+		/*ToDo: query yahoo (or others) for 
+			- current price
+			- this days opening
+			- and set: high(highest so far), low (lowest so far), close (current price)
+			Cave: Opening Hours?
+		*/ 
+	}
 
 }
