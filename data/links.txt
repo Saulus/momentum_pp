@@ -1,3 +1,45 @@
+Prozess mit YQL:
+
+##### Get shares & Construct Index ########
+[for DAX, MDAX, TecDAX]
+[excel]
+1. from local csv (pre-2009)
+2. from 20091210 to 201003xx
+http://www.dax-indices.com/MediaLibrary/Document/WeightingFiles/MDAX_ICR.20091210.xls
+2. From: 20100401
+www.dax-indices.com/MediaLibrary/Document/WeightingFiles/09/DAX_ICR.20130930.xls
+
+
+##### Verify Ticker (get it for ISIN) #####
+[json]
+select * from yahoo.finance.isin where symbol in ("DE0005501357")
+(CAVE: Wenn "GER" im Namen, dann funktioniert Parsing nicht korrekt -> alle ticker geliefert)
+
+#### Get Datumsangaben for Ticker ####
+[json]
+select * from yahoo.finance.stocks where symbol="SPR.DE"
+
+#### Get historical prices for ticker ####
+[json]
+select * from yahoo.finance.historicaldata where symbol = "YHOO" and startDate = "2009-09-11" and endDate = "2010-03-10"
+[csv]
+http://ichart.finance.yahoo.com/table.csv?s=WCMK.DE&g=d&ignore=.csv
+http://ichart.finance.yahoo.com/table.csv?s=AIR.DE&d=2&e=4&f=2014&g=d&a=11&b=28&c=2007&ignore=.csv
+
+
+#### Get historical kennzahlen ####
+[csv]
+http://financials.morningstar.com/ajax/exportKR2CSV.html?&callback=?&t=XSWX:SPR&region=che
+
+
+### Get full current kennzahlen for ticker #####
+[json]
+select * from yahoo.finance.quotes where symbol ="SPR.DE"
+(.quote: einfache Version)
+
+
+
+
 http://ichart.finance.yahoo.com/table.csv?s=%5EMDAXI&a=11&b=30&c=2013&d=02&e=4&f=2014&g=d&ignore=.csv
 http://ichart.finance.yahoo.com/table.csv?s=%5EMDAXI&a=11&b=30&c=1987&d=2&e=4&f=2014&g=d&ignore=.csv
 http://ichart.finance.yahoo.com/table.csv?s=WCMK.DE&g=d&ignore=.csv
@@ -14,6 +56,11 @@ http://ichart.finance.yahoo.com/table.csv?s=%5EGDAXHI&a=11&b=31&c=1987&d=2&e=4&f
 
 
 
+https://developer.yahoo.com/yql/console/?q=show%20tables&env=store://datatables.org/alltableswithkeys#h=select+*+from+yahoo.finance.historicaldata+where+symbol+%3D+%22YHOO%22+and+startDate+%3D+%222009-09-11%22+and+endDate+%3D+%222010-03-10%22
+
+
+
+
 
 
 Zusammensetzung MDAX
@@ -22,10 +69,22 @@ http://www.dax-indices.com/DE/MediaLibrary/Document/Historical_Index_Composition
 http://www.dax-indices.com/MediaLibrary/Document/WeightingFiles/MDAX_ICR.20091210.xls
 http://www.dax-indices.com/MediaLibrary/Document/WeightingFiles/MDAX_ICR.20100222.xls
 
+NEU:
+www.dax-indices.com/MediaLibrary/Document/WeightingFiles/09/DAX_ICR.20130930.xls
+
 
 AIR.DE
 http://ichart.finance.yahoo.com/table.csv?s=AIR.DE&d=2&e=4&f=2014&g=d&a=11&b=28&c=2007&ignore=.csv
 
+
+Andere Financials:
+financials.morningstar.com/ajax/exportKR2CSV.html?&callback=?&t=XSWX:ADS&region=che
+
+
+
+
+Reuters für ADS.DE:
+ADSGn.DE
 
 
 Die gelieferten Kursdaten sind in einer besonderen Art Split- und Dividenden-bereinigt. Neben den Spalten Date, Open, High, Low, Close und Volume wird die Spalte Adjusted Close mitgeliefert. Hierin versteckt sich der nach Split- und Dividenden bereinigte Schlusskurs des jeweiligen Wertpapiers vom jeweiligen Tag, Monat etc. Möchte man mit den Daten eine komplett bereinigte Kurshistorie erzeugen, müssen alle Spalten vorher über die Werte der Spalte Adjusted Close neu berechnet werden. Eigentlich eine sehr praktische Art, die Split- und Dividendeninformationen unterzubringen. Somit muss man diese nicht separat laden und daraufhin die Kursreihen anpassen. Die Ermittlung der angepassten Kurswerte je Zeile erfolgt ganz einfach über folgende Formel: 
